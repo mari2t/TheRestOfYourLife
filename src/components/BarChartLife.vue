@@ -54,8 +54,9 @@ export default {
 }
 
 .bg-white {
-  background-image: linear-gradient(to right, #3d9d6261 0%, #c8b75876 100%);
+  background-image: linear-gradient(to right, #50cc7f 0%, #f5d100 100%);
   z-index: 2;
+  left: 0;
 }
 
 .bg-green {

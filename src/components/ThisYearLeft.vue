@@ -1,23 +1,17 @@
 <template>
   <div>
-    <p class="text">
-      {{ timeLeftLife.years }} 年 {{ timeLeftLife.months }} か月
-    </p>
-    <p class="text">({{ timeLeftLife.dead }})</p>
-    <p class="percent">{{ timeLeftLife.percentage }} %</p>
+    <p class="text">{{ remaining.months }} ヵ月</p>
+    <p class="text">（{{ remaining.weeks }} 週）</p>
+    <p class="percent">{{ remaining.percentage }} %</p>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    age: {
+    remaining: {
       type: Object,
-      default: () => ({ years: 0, months: 0, months12: 0 }),
-    },
-    timeLeftLife: {
-      type: Object,
-      default: () => ({ years: 0, months: 0, percentage: 0, age: 0, dead: 0 }),
+      default: () => ({ months: 0, weeks: 0, percentage: 0 }),
     },
   },
 };
@@ -28,7 +22,6 @@ export default {
   justify-content: space-around;
   align-items: flex-start;
 }
-
 .percent {
   display: flex;
   justify-content: space-around;

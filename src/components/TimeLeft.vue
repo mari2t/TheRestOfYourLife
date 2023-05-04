@@ -1,60 +1,58 @@
 <template>
-  <div>
-    <div>
-      <label for="birthday">誕生日:</label>
+  <div class="question-container">
+    <div class="input-container">
+      <label for="birthday" class="question">誕生日を入力してください:　</label>
       <input
         type="date"
         id="birthday"
         @input="updateBirthday($event.target.value)"
       />
+      <p>（現在{{ age.years }} 歳？）</p>
     </div>
-    <div>
-      <label for="lifeExpectancy">いつまで生きたいですか:</label>
-      <input
-        type="date"
-        id="lifeExpectancy"
-        v-model="selectedDate"
-        @input="updateLifeExpectancy($event.target.value)"
-      />
-      <button @click="addYearsToLifeExpectancy(1)">1年後</button>
-      <button @click="addYearsToLifeExpectancy(3)">3年後</button>
-      <button @click="addYearsToLifeExpectancy(10)">10年後</button>
-      <button @click="addYearsToLifeExpectancy(20)">20年後</button>
-      <button @click="addYearsToLifeExpectancy(40)">40年後</button>
-      <button @click="addYearsToLifeExpectancy(60)">60年後</button>
-      <button @click="addYearsToLifeExpectancy(80)">80年後</button>
-      <button @click="addYearsToLifeExpectancy(100)">100年後</button>
-      <button @click="addYearsToLifeExpectancy(200)">200年後</button>
-      <button @click="addYearsToLifeExpectancy(100059)">10万59年後</button>
+    <div class="arrow-container">→</div>
+    <div class="input-container">
+      <div>
+        <label for="lifeExpectancy" class="question"
+          >いつまで生きたいですか? :　</label
+        >
+        <input
+          type="date"
+          id="lifeExpectancy"
+          v-model="selectedDate"
+          @input="updateLifeExpectancy($event.target.value)"
+        />
+      </div>
+      <div>or</div>
+      <div>
+        <button class="button-year" @click="addYearsToLifeExpectancy(10)">
+          10年後
+        </button>
+        <button class="button-year" @click="addYearsToLifeExpectancy(20)">
+          20年後
+        </button>
+        <button class="button-year" @click="addYearsToLifeExpectancy(40)">
+          40年後
+        </button>
+        <button class="button-year" @click="addYearsToLifeExpectancy(60)">
+          60年後
+        </button>
+        <button class="button-year" @click="addYearsToLifeExpectancy(80)">
+          80年後
+        </button>
+        <button class="button-year" @click="addYearsToLifeExpectancy(100)">
+          100年後
+        </button>
+        <button class="button-year" @click="addYearsToLifeExpectancy(100059)">
+          10万59年後
+        </button>
+        <p>（{{ lifeUntilDead }} 歳まで生きる？）</p>
+      </div>
     </div>
-    <p>{{ lifeUntilDead }}</p>
-    <div>
-      <button @click="calculateTimeLeft()">生きる</button>
-    </div>
-    <div>
-      <h3>今日が終わるまでの秒、分、時間</h3>
-      <p>{{ timeLeftToday.minutes }} 分</p>
-      <p>{{ timeLeftToday.hours }} 時間</p>
-      <p>{{ timeLeftToday.percentage }} パーセント</p>
-    </div>
-    <div>
-      <h3>今週が終わるまでの時間、日</h3>
-      <p>{{ timeLeftThisWeek.days }} 日</p>
-      <p>{{ timeLeftThisWeek.hours }} 時間</p>
-      <p>{{ timeLeftThisWeek.percentage }} パーセント</p>
-    </div>
-    <div>
-      <h3>今月が終わるまでの時間、日、週</h3>
-      <p>{{ timeLeftThisMonth.weeks }} 週</p>
-      <p>{{ timeLeftThisMonth.days }} 日</p>
-      <p>{{ timeLeftThisMonth.hours }} 時間</p>
-    </div>
-    <div>
-      <h3>今年が終わるまでの時間、日、週、月</h3>
-      <p>{{ timeLeftThisYear.months }} 月</p>
-      <p>{{ timeLeftThisYear.weeks }} 週</p>
-      <p>{{ timeLeftThisYear.days }} 日</p>
-      <p>{{ timeLeftThisYear.hours }} 時間</p>
+    <div class="arrow-container">→</div>
+    <div class="button-container">
+      <button class="button-calculate" @click="calculateTimeLeft()">
+        残りの時間は？
+      </button>
     </div>
   </div>
 </template>
@@ -72,13 +70,14 @@ export default {
       birthday: null,
       lifeExpectancy: null,
       lifeUntilDead: null,
+      deadDate: null,
       timeLeftToday: {},
       timeLeftThisWeek: {},
       timeLeftThisMonth: {},
       timeLeftThisYear: {},
       timeLeftThisAge: {},
       selectedDate: null,
-      age: { years: 0, months: 0, months12: 0 },
+      age: { years: null, months: null, months12: null },
     };
   },
   methods: {
@@ -90,20 +89,22 @@ export default {
     //いつまで生きたいか関数
     updateLifeExpectancy(lifeExpectancy) {
       this.lifeExpectancy = lifeExpectancy;
-      console.log(this.lifeExpectancy);
-
+      //10万59歳はカレンダー表記できないのでifで分岐
+      const now = moment();
+      const nowYear = now.year();
       if (this.lifeExpectancy === "+102082-05") {
-        const now = moment();
-        const nowYear = now.year();
-        const birth = parseInt(this.birthday.slice(0, 4));
-        const dead = 100059;
-        const years = dead + (nowYear - birth);
-        this.lifeUntilDead = `（${years} 歳まで生きる？）`;
+        const birthYear = parseInt(this.birthday.slice(0, 4));
+        const deadYear = 100059;
+        const deadMonth = this.lifeExpectancy.slice(8, 10);
+        const years = deadYear + (nowYear - birthYear);
+        this.deadDate = `${deadYear + birthYear} 年${deadMonth} 月まで`;
+        this.lifeUntilDead = years;
       } else {
         const birth = moment(this.birthday, "YYYY-MM-DD");
         const dead = moment(this.lifeExpectancy, "YYYY-MM-DD");
         const years = dead.diff(birth, "year");
-        this.lifeUntilDead = `（${years} 歳まで生きる？）`;
+        this.deadDate = `${dead.year()} 年${dead.month() + 1} 月まで`;
+        this.lifeUntilDead = years;
       }
     },
     //現在の年齢関数
@@ -193,12 +194,9 @@ export default {
             .duration(endOfMonth.diff(now, "weeks"), "weeks")
             .asWeeks(),
           days: dayjs.duration(endOfMonth.diff(now, "days"), "days").asDays(),
-          hours: dayjs
-            .duration(endOfMonth.diff(now, "hours"), "hours")
-            .asHours(),
         });
       (this.timeLeftThisMonth.percentage = Math.floor(
-        (this.timeLeftThisMonth.hours / (24 * 30)) * 100
+        (this.timeLeftThisMonth.days / 30) * 100
       )),
         // 今年の残り時間
         (this.timeLeftThisYear = {
@@ -208,24 +206,23 @@ export default {
           weeks: dayjs
             .duration(endOfYear.diff(now, "weeks"), "weeks")
             .asWeeks(),
-          days: dayjs.duration(endOfYear.diff(now, "days"), "days").asDays(),
-          hours: dayjs
-            .duration(endOfYear.diff(now, "hours"), "hours")
-            .asHours(),
           percentage: Math.floor(
-            (this.timeLeftThisYear.hours / (24 * 365)) * 100
+            (this.timeLeftThisYear.weeks / (24 * 365)) * 100
           ),
         });
       (this.timeLeftThisYear.percentage = Math.floor(
-        (this.timeLeftThisYear.hours / (24 * 365)) * 100
+        (this.timeLeftThisYear.weeks / 52) * 100
       )),
         // 残りの人生
+
         (this.timeLeftThisAge = {
           years: yearsRemaining,
           months: monthsRemaining,
           percentage: LifeRemainingPercentage,
+          age: this.lifeUntilDead,
+          dead: this.deadDate,
         });
-      // プロップスとして渡す
+      // propsとして渡す
       this.$emit("update-time-left-today", this.timeLeftToday);
       this.$emit("update-time-left-this-week", this.timeLeftThisWeek);
       this.$emit("update-time-left-this-month", this.timeLeftThisMonth);
@@ -235,3 +232,78 @@ export default {
   },
 };
 </script>
+<style scoped>
+.question-container {
+  padding: 2px;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-evenly;
+}
+.arrow-container {
+  font-weight: bolder;
+  font-size: x-large;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input-container {
+  padding: 1rem;
+  margin-right: 5%;
+  margin-left: 5%;
+  border-radius: 1rem;
+  border: 0.5rem solid #d7d4d4;
+  width: 40rem;
+  height: 12rem;
+  background-color: white;
+}
+.button-container {
+  padding: 1rem;
+  margin-right: 5%;
+  margin-left: 5%;
+  text-align: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: 0.5rem solid #d7d4d4;
+  width: 40rem;
+  height: 12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+.question {
+  font-weight: bold;
+}
+.button-year {
+  font-size: medium;
+  padding: 2px;
+  margin: 2px;
+  justify-content: space-evenly;
+  border-radius: 0.5rem;
+  color: #3d4041;
+  background-color: #c3c5c6;
+  border: none;
+}
+.button-year:hover {
+  background-color: #ccd4d8;
+}
+.button-calculate {
+  font-size: larger;
+  font-weight: bold;
+
+  padding: 2px;
+  margin: 2px;
+  border: none;
+  border-radius: 1rem;
+  width: 10rem;
+  color: #ede9e9;
+  background-color: #7e8081;
+  border-bottom: 5px solid #454646;
+}
+.button-calculate:hover {
+  color: #3d4041;
+  margin-top: 3px;
+  background-image: linear-gradient(to right, #50cc7f 0%, #f5d100 100%);
+  border-bottom: 2px solid #376f80;
+}
+</style>
