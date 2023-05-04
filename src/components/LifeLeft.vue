@@ -7,7 +7,10 @@
     </h3>
 
     <h3>
-      残りの人生あと: {{ timeLeftLife.years }}年{{ timeLeftLife.months }}か月
+      残りの人生あと: {{ timeLeftLife.years }} 年　{{
+        timeLeftLife.months
+      }}
+      か月　{{ timeLeftLife.percentage }} パーセント
     </h3>
   </div>
 </template>
@@ -21,7 +24,7 @@ export default {
     },
     timeLeftLife: {
       type: Object,
-      default: () => ({ years: 0, months: 0 }),
+      default: () => ({ years: 0, months: 0, percentage: 0 }),
     },
   },
 };

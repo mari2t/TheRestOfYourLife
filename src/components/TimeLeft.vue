@@ -9,7 +9,7 @@
       />
     </div>
     <div>
-      <label for="lifeExpectancy">いつまで生きたいか:</label>
+      <label for="lifeExpectancy">いつまで生きたいですか:</label>
       <input
         type="date"
         id="lifeExpectancy"
@@ -17,27 +17,20 @@
         @input="updateLifeExpectancy($event.target.value)"
       />
       <button @click="addYearsToLifeExpectancy(1)">1年後</button>
+      <button @click="addYearsToLifeExpectancy(3)">3年後</button>
+      <button @click="addYearsToLifeExpectancy(10)">10年後</button>
       <button @click="addYearsToLifeExpectancy(20)">20年後</button>
       <button @click="addYearsToLifeExpectancy(40)">40年後</button>
+      <button @click="addYearsToLifeExpectancy(60)">60年後</button>
       <button @click="addYearsToLifeExpectancy(80)">80年後</button>
       <button @click="addYearsToLifeExpectancy(100)">100年後</button>
       <button @click="addYearsToLifeExpectancy(200)">200年後</button>
-      <button @click="addYearsToLifeExpectancy(1000)">10059年後</button>
+      <button @click="addYearsToLifeExpectancy(100059)">10万59年後</button>
     </div>
+    <p>{{ lifeUntilDead }}</p>
     <div>
-      <button @click="calculateTimeLeft()">計算</button>
+      <button @click="calculateTimeLeft()">生きる</button>
     </div>
-    <h3>
-      現在の年齢: {{ age.years }}歳{{ age.months12 }}か月（生後{{
-        age.months
-      }}か月）
-    </h3>
-
-    <h3>
-      残りの人生あと: {{ timeLeftThisAge.years }}年{{
-        timeLeftThisAge.months
-      }}か月
-    </h3>
     <div>
       <h3>今日が終わるまでの秒、分、時間</h3>
       <p>{{ timeLeftToday.minutes }} 分</p>
@@ -69,6 +62,7 @@
 <script>
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import moment from "moment";
 
 dayjs.extend(duration);
 
@@ -77,6 +71,7 @@ export default {
     return {
       birthday: null,
       lifeExpectancy: null,
+      lifeUntilDead: null,
       timeLeftToday: {},
       timeLeftThisWeek: {},
       timeLeftThisMonth: {},
@@ -95,6 +90,21 @@ export default {
     //いつまで生きたいか関数
     updateLifeExpectancy(lifeExpectancy) {
       this.lifeExpectancy = lifeExpectancy;
+      console.log(this.lifeExpectancy);
+
+      if (this.lifeExpectancy === "+102082-05") {
+        const now = moment();
+        const nowYear = now.year();
+        const birth = parseInt(this.birthday.slice(0, 4));
+        const dead = 100059;
+        const years = dead + (nowYear - birth);
+        this.lifeUntilDead = `（${years} 歳まで生きる？）`;
+      } else {
+        const birth = moment(this.birthday, "YYYY-MM-DD");
+        const dead = moment(this.lifeExpectancy, "YYYY-MM-DD");
+        const years = dead.diff(birth, "year");
+        this.lifeUntilDead = `（${years} 歳まで生きる？）`;
+      }
     },
     //現在の年齢関数
     calculateAge() {
@@ -128,7 +138,6 @@ export default {
       if (!this.birthday || !this.lifeExpectancy) {
         return;
       }
-
       const now = dayjs();
       const endOfDay = dayjs().endOf("day");
       const endOfWeek = dayjs().endOf("week");
