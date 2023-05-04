@@ -1,29 +1,11 @@
 # TheRestOfYourLife
 
-This template should help get you started developing with Vue 3 in Vite.
+誕生日と生きたい日付から、残りの時間を計算するサイトです。
 
-## Recommended IDE Setup
+## example
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## ![example.png](/public/img/example.png "week4-2-plofiles-post.png")
 
-## Customize configuration
+## Next
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+・大雑把に計算しているのでそこらへんをどうにかしたいです。
