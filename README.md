@@ -4,7 +4,7 @@
 
 ## example
 
-## ![example.png](/public/img/example.png "week4-2-plofiles-post.png")
+## ![example.png](/public/img/example.png "example.png")
 
 ## Next
 
