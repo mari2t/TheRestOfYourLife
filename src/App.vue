@@ -142,6 +142,7 @@ h1 {
 }
 h2 {
   text-align: center;
+  color: black;
 }
 .title {
   display: flex;
