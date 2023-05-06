@@ -1,24 +1,25 @@
 <template>
   <div class="question-container">
     <div class="input-container">
-      <label for="birthday" class="question"
-        >1. 誕生日を入力してください:　</label
+      <label for="birthday" class="question">1. 誕生日を入力してください:</label
       ><br />
-      <label for="birthday">(Please enter your birthday)</label><br />
+      <label for="birthday">(Please enter your birthday:)</label><br />
       <input
         type="date"
         id="birthday"
         @input="updateBirthday($event.target.value)"
       />
-      <p>現在{{ age.years }} 歳？</p>
-      <p>({{ age.years }} years old?)</p>
+      <p class="note-text">現在{{ age.years }} 歳？</p>
+      <p class="note-text">(Are you {{ age.years }} years old?)</p>
     </div>
     <div class="input-container">
       <div>
         <label for="lifeExpectancy" class="question"
           >2. いつまで生きたいですか? :　</label
         ><br />
-        <label for="birthday">(How long do you want to live?)</label><br />
+        <label for="birthday"
+          >(Please enter how long you would like to live.)</label
+        ><br />
         <input
           type="date"
           id="lifeExpectancy"
@@ -50,8 +51,10 @@
         <button class="button-year" @click="addYearsToLifeExpectancy(100059)">
           100059
         </button>
-        <p>{{ lifeUntilDead }} 歳まで生きる？</p>
-        <p>(Want to live until {{ lifeUntilDead }} years old?)</p>
+        <p class="note-text">{{ lifeUntilDead }} 歳まで生きる？</p>
+        <p class="note-text">
+          (Do you want to live until {{ lifeUntilDead }} years old?)
+        </p>
       </div>
     </div>
     <div class="button-container">
@@ -94,10 +97,11 @@ export default {
     //いつまで生きたいか関数
     updateLifeExpectancy(lifeExpectancy) {
       this.lifeExpectancy = lifeExpectancy;
-      //10万59歳はカレンダー表記できないのでifで分岐
-      const now = moment();
+      const now = dayjs();
       const nowYear = now.year();
-      if (this.lifeExpectancy === "+102082-05") {
+      const SPECIAL_DATE = "+102082-05"; // 10万59歳用変数
+      //10万59歳はカレンダー表記できないのでifで分岐
+      if (this.lifeExpectancy === SPECIAL_DATE) {
         const birthYear = parseInt(this.birthday.slice(0, 4));
         const deadYear = 100059;
         const deadMonth = this.lifeExpectancy.slice(8, 10);
@@ -153,32 +157,36 @@ export default {
       const inputDateLifeExpectancy = dayjs(this.lifeExpectancy);
 
       if (!this.birthday) {
-        alert("誕生日を入力してください。");
+        alert("誕生日を入力してください。(Please enter your birthday.)");
         return;
       }
       if (!this.lifeExpectancy) {
-        alert("いつまで生きたいか入力してください。");
+        alert(
+          "いつまで生きたいか入力してください。(Please enter how long you would like to live.)"
+        );
         return;
       }
-      if (tomorrowDate.isBefore(inputDateBirthday)) {
-        alert("今日以前の誕生日を選択してください。");
+      if (currentDate.isBefore(inputDateBirthday)) {
+        alert(
+          "今日以前の誕生日を選択してください。(Select a birthday before today.)"
+        );
         return;
       }
       if (inputDateLifeExpectancy.isBefore(tomorrowDate)) {
-        alert("明日以降の生きたい日付を選択してください。");
+        alert(
+          "明日以降の生きたい日付を選択してください。(Select the date you want to live after tomorrow.)"
+        );
         return;
       }
 
-      // 余命１年未満の場合は１年未満と表示
+      // 現在と寿命の差を計算
       let yearsRemaining = dayjs
         .duration(endOfLife.diff(now, "years"), "years")
         .asYears();
       let monthsRemaining = dayjs
         .duration(endOfLife.diff(now, "months"), "months")
         .asMonths();
-      let daysRemaining = dayjs
-        .duration(endOfLife.diff(now, "days"), "days")
-        .asDays();
+      let daysRemaining = endOfLife.diff(now, "day") + 1;
 
       if (yearsRemaining < 1) {
         yearsRemaining = 0;
@@ -263,32 +271,25 @@ export default {
   display: flex;
   justify-content: space-evenly;
 }
-.arrow-container {
-  font-weight: bolder;
-  font-size: x-large;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .input-container {
   padding: 1rem;
-  margin-right: 3%;
-  margin-left: 3%;
+  margin-right: 1%;
+  margin-left: 1%;
   border-radius: 1rem;
   border: 0.5rem solid #d7d4d4;
-  width: 80%;
+  width: 90%;
   height: 16rem;
   background-color: white;
 }
 .button-container {
   padding: 1rem;
-  margin-right: 3%;
-  margin-left: 3%;
+  margin-right: 1%;
+  margin-left: 1%;
   text-align: center;
   justify-content: center;
   border-radius: 1rem;
   border: 0.5rem solid #d7d4d4;
-  width: 80%;
+  width: 90%;
   height: 16rem;
   display: flex;
   align-items: center;
@@ -297,6 +298,9 @@ export default {
 }
 .question {
   font-weight: bold;
+}
+.note-text {
+  color: gray;
 }
 .button-year {
   font-size: medium;
@@ -314,7 +318,6 @@ export default {
 .button-calculate {
   font-size: larger;
   font-weight: bold;
-
   padding: 2px;
   margin: 2px;
   border: none;
@@ -329,5 +332,25 @@ export default {
   margin-top: 3px;
   background-image: linear-gradient(to right, #50cc7f 0%, #f5d100 100%);
   border-bottom: 2px solid #376f80;
+}
+@media (max-width: 1200px) {
+  .question-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .input-container,
+  .button-container {
+    width: 70%;
+    margin-bottom: 1rem;
+  }
+}
+@media (max-width: 550px) {
+  .input-container {
+    width: 100%;
+    padding: 0.5rem;
+    margin-right: 0;
+    margin-left: 0;
+    height: auto;
+  }
 }
 </style>

@@ -153,7 +153,7 @@ h2 {
 .components-container {
   display: flex;
   justify-content: space-evenly;
-  margin-top: 1rem;
+  margin-top: 0.4rem;
   margin-right: 0.2rem;
   margin-left: 0.2rem;
 }
@@ -171,7 +171,7 @@ h2 {
   border-radius: 1rem;
   border: 0.5rem solid #d7d4d4;
   width: 30rem;
-  padding-top: 1rem;
+  padding-top: 0.4rem;
   padding-bottom: 1rem;
   margin-right: 0.2rem;
   margin-left: 0.2rem;
