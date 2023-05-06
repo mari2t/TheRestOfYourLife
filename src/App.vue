@@ -11,7 +11,7 @@
     />
     <div class="components-container">
       <div class="components-life">
-        <span class="title">残りの人生</span>
+        <span class="title">残りの人生(The Rest Of Your Life)</span>
         <LifeLeft :age="age" :timeLeftLife="timeLeftLife" />
         <BarChartLife :time-left="timeLeftLife.percentage" />
       </div>
@@ -74,7 +74,14 @@ export default {
         thisYear: 0,
       },
       age: { years: 0, months: 0, months12: 0 },
-      timeLeftLife: { years: 0, months: 0, percentage: 0, age: 0, dead: 0 },
+      timeLeftLife: {
+        years: 0,
+        months: 0,
+        percentage: 0,
+        age: 0,
+        deadYear: 0,
+        deadMonth: 0,
+      },
       todayLeft: {
         minutes: 0,
         hours: 0,
@@ -109,7 +116,6 @@ export default {
     },
     updateTodayLeft(value) {
       this.todayLeft = value;
-      console.log(this.todayLeft);
     },
     updateThisWeekLeft(value) {
       this.thisWeekLeft = value;

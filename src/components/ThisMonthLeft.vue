@@ -1,7 +1,8 @@
 <template>
   <div>
-    <p class="text">{{ remaining.weeks }} 週</p>
-    <p class="text">（{{ remaining.days }} 日）</p>
+    <p class="text">
+      {{ remaining.weeks }} 週(weeks)（{{ remaining.days }} 日(days)）
+    </p>
     <p class="percent">{{ remaining.percentage }} %</p>
   </div>
 </template>

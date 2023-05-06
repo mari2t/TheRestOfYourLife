@@ -1,9 +1,15 @@
 <template>
   <div>
     <p class="text">
-      {{ timeLeftLife.years }} 年 {{ timeLeftLife.months }} か月
+      {{ timeLeftLife.years }} 年 {{ timeLeftLife.months }} か月　({{
+        timeLeftLife.years
+      }}
+      years {{ timeLeftLife.months }} months)
     </p>
-    <p class="text">({{ timeLeftLife.dead }})</p>
+    <p class="text">
+      {{ timeLeftLife.deadYear }} 年 {{ timeLeftLife.deadMonth }} 月　まで (
+      Until {{ timeLeftLife.deadMonth }} / {{ timeLeftLife.deadYear }})
+    </p>
     <p class="percent">{{ timeLeftLife.percentage }} %</p>
   </div>
 </template>
@@ -17,7 +23,14 @@ export default {
     },
     timeLeftLife: {
       type: Object,
-      default: () => ({ years: 0, months: 0, percentage: 0, age: 0, dead: 0 }),
+      default: () => ({
+        years: 0,
+        months: 0,
+        percentage: 0,
+        age: 0,
+        deadYear: 0,
+        deadMonth: 0,
+      }),
     },
   },
 };

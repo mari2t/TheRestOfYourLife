@@ -42,7 +42,7 @@ export default {
   width: 80%;
   position: relative;
   border: 1px solid dimgray;
-  border-radius: 2rem;
+  border-radius: 10px;
 }
 
 .bar {
@@ -50,17 +50,18 @@ export default {
   position: absolute;
   bottom: 0;
   transition: width 1s ease-in-out;
-  border-radius: 2rem;
 }
 
 .bg-white {
   background-image: linear-gradient(to right, #3d9d6261 0%, #c8b75876 100%);
   z-index: 2;
+  border-radius: 10px;
 }
 
 .bg-green {
   background-color: #f3f6f6;
   width: 100%;
   z-index: 1;
+  border-radius: 10px;
 }
 </style>

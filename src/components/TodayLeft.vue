@@ -1,7 +1,8 @@
 <template>
   <div>
-    <p class="text">{{ remaining.hours }} 時間</p>
-    <p class="text">（{{ remaining.minutes }} 分）</p>
+    <p class="text">
+      {{ remaining.hours }} 時間(hours) （{{ remaining.minutes }} 分(minutes)）
+    </p>
     <p class="percent">{{ remaining.percentage }} %</p>
   </div>
 </template>
