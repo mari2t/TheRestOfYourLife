@@ -280,6 +280,7 @@ export default {
   width: 90%;
   height: 16rem;
   background-color: white;
+  color: black;
 }
 .button-container {
   padding: 1rem;

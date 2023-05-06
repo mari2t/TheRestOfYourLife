@@ -22,6 +22,7 @@ export default {
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
+  color: black;
 }
 .percent {
   display: flex;
