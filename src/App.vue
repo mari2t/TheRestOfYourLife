@@ -149,6 +149,7 @@ h2 {
   align-items: flex-start;
   width: 100%;
   font-weight: bolder;
+  color: black;
 }
 .components-container {
   display: flex;
