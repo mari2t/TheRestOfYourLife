@@ -174,7 +174,7 @@ export default {
       }
       if (inputDateLifeExpectancy.isBefore(tomorrowDate)) {
         alert(
-          "明日以降の生きたい日付を選択してください。(Select the date you want to live after tomorrow.)"
+          "明日以降の生きたい日付を選択してください。(Select the date you want to live after tomorrow.Die tomorrow live tonight!)"
         );
         return;
       }
