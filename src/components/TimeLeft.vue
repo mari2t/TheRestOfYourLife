@@ -23,7 +23,8 @@
         <input
           type="date"
           id="lifeExpectancy"
-          v-model="selectedDate"
+          v-model="specialYearSelected"
+          :style="{ color: specialYearSelected === true ? 'white' : 'black' }"
           @input="updateLifeExpectancy($event.target.value)"
         />
       </div>
@@ -48,7 +49,11 @@
         <button class="button-year" @click="addYearsToLifeExpectancy(100)">
           100
         </button>
-        <button class="button-year" @click="addYearsToLifeExpectancy(100059)">
+        <button
+          class="button-year"
+          :class="{ 'button-year-special': specialYearSelected }"
+          @click="addYearsToLifeExpectancy(100059)"
+        >
           100059
         </button>
         <p class="note-text">{{ lifeUntilDead }} 歳まで生きる？</p>
@@ -86,6 +91,8 @@ export default {
       timeLeftThisAge: {},
       selectedDate: null,
       age: { years: null, months: null, months12: null },
+      specialYearSelected: false, // 100059用
+      SPECIAL_YEAR: 100059, // 1100059用
     };
   },
   methods: {
@@ -99,16 +106,18 @@ export default {
       this.lifeExpectancy = lifeExpectancy;
       const now = dayjs();
       const nowYear = now.year();
-      const SPECIAL_DATE = "+102082-05"; // 10万59歳用変数
+      const date = new Date();
+      const thisMonth = String(date.getMonth() + 1).padStart(2, "0");
+      const SPECIAL_DATE = "9999-12-31"; // 10万59歳用変数
+
       //10万59歳はカレンダー表記できないのでifで分岐
-      if (this.lifeExpectancy === SPECIAL_DATE) {
+      if (this.specialYearSelected === true) {
         const birthYear = parseInt(this.birthday.slice(0, 4));
-        const deadYear = 100059;
-        const deadMonth = this.lifeExpectancy.slice(8, 10);
-        const years = deadYear + (nowYear - birthYear);
-        this.deadDate.year = deadYear + birthYear;
+        const deadYear = parseInt(nowYear + this.SPECIAL_YEAR);
+        const deadMonth = thisMonth;
+        this.deadDate.year = deadYear;
         this.deadDate.month = deadMonth;
-        this.lifeUntilDead = years;
+        this.lifeUntilDead = deadYear - birthYear;
       } else {
         const birth = moment(this.birthday, "YYYY-MM-DD");
         const dead = moment(this.lifeExpectancy, "YYYY-MM-DD");
@@ -134,11 +143,20 @@ export default {
       // プロップスとして渡す
       this.$emit("update-age", this.age);
     },
-    // xxx年後を追加関数
+
+    // xxx年後関数
     addYearsToLifeExpectancy(years) {
       const currentDate = new Date();
-      currentDate.setFullYear(currentDate.getFullYear() + years);
-      this.selectedDate = currentDate.toISOString().substring(0, 10);
+      let newYear;
+      if (years === this.SPECIAL_YEAR) {
+        this.selectedDate = "9999-12-31";
+        this.specialYearSelected = true; // 特別な年を選択
+      } else {
+        newYear = currentDate.getFullYear() + years;
+        currentDate.setFullYear(newYear);
+        this.selectedDate = currentDate.toISOString().substring(0, 10);
+        this.specialYearSelected = false; // 特別な年を選択しない
+      }
       this.updateLifeExpectancy(this.selectedDate);
     },
     // 計算関数
@@ -149,13 +167,15 @@ export default {
       const endOfMonth = dayjs().endOf("month");
       const endOfYear = dayjs().endOf("year");
       const endOfLife = dayjs(this.lifeExpectancy);
+      let yearsRemaining = 0;
+      let monthsRemaining = 0;
+      let daysRemaining = 0;
 
       //アラート用
       const currentDate = dayjs().startOf("day");
       const tomorrowDate = dayjs().add(1, "day").startOf("day");
       const inputDateBirthday = dayjs(this.birthday);
       const inputDateLifeExpectancy = dayjs(this.lifeExpectancy);
-
       if (!this.birthday) {
         alert("誕生日を入力してください。(Please enter your birthday.)");
         return;
@@ -180,19 +200,29 @@ export default {
       }
 
       // 現在と寿命の差を計算
-      let yearsRemaining = dayjs
-        .duration(endOfLife.diff(now, "years"), "years")
-        .asYears();
-      let monthsRemaining = dayjs
-        .duration(endOfLife.diff(now, "months"), "months")
-        .asMonths();
-      let daysRemaining = endOfLife.diff(now, "day") + 1;
+      //100059歳用条件分岐
+      if (this.specialYearSelected === true) {
+        yearsRemaining = this.SPECIAL_YEAR - 1;
+        monthsRemaining = 11;
+      } else {
+        yearsRemaining = dayjs
+          .duration(endOfLife.diff(now, "years"), "years")
+          .asYears();
+        monthsRemaining = dayjs
+          .duration(endOfLife.diff(now, "months"), "months")
+          .asMonths();
+      }
+      daysRemaining = endOfLife.diff(now, "day") + 1;
 
       if (yearsRemaining < 1) {
         yearsRemaining = 0;
         monthsRemaining = monthsRemaining;
       } else {
-        monthsRemaining = monthsRemaining - yearsRemaining * 12;
+        if (endOfLife.$y === 9999) {
+          monthsRemaining = monthsRemaining;
+        } else {
+          monthsRemaining = monthsRemaining - yearsRemaining * 12;
+        }
       }
       const daysSinceBirthday = now.diff(this.birthday, "day");
       const totalDaysRemaining = daysRemaining + daysSinceBirthday;
@@ -333,6 +363,10 @@ export default {
   margin-top: 3px;
   background-image: linear-gradient(to right, #50cc7f 0%, #f5d100 100%);
   border-bottom: 2px solid #376f80;
+}
+/* 100059選択時にカレンダー文字を白に設定 */
+.button-year-special {
+  color: #ffffff;
 }
 @media (max-width: 1200px) {
   .question-container {
