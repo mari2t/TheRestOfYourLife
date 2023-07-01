@@ -7,6 +7,7 @@
       <input
         type="date"
         id="birthday"
+        v-model="birthday"
         @input="updateBirthday($event.target.value)"
       />
       <p class="note-text">現在{{ age.years }} 歳？</p>
@@ -23,7 +24,7 @@
         <input
           type="date"
           id="lifeExpectancy"
-          v-model="specialYearSelected"
+          v-model="selectedDate"
           :style="{ color: specialYearSelected === true ? 'white' : 'black' }"
           @input="updateLifeExpectancy($event.target.value)"
         />
@@ -49,11 +50,7 @@
         <button class="button-year" @click="addYearsToLifeExpectancy(100)">
           100
         </button>
-        <button
-          class="button-year"
-          :class="{ 'button-year-special': specialYearSelected }"
-          @click="addYearsToLifeExpectancy(100059)"
-        >
+        <button class="button-year" @click="addYearsToLifeExpectancy(100059)">
           100059
         </button>
         <p class="note-text">{{ lifeUntilDead }} 歳まで生きる？</p>
@@ -98,9 +95,21 @@ export default {
   methods: {
     //誕生日関数
     updateBirthday(birthday) {
+      //アラート用
+      const currentDate = dayjs().startOf("day");
+
+      //　今日以前の誕生日の場合
+      if (currentDate.isBefore(birthday)) {
+        alert(
+          "今日以前の誕生日を選択してください。(Select a birthday before today.)"
+        );
+        this.birthday = null;
+        return;
+      }
       this.birthday = birthday;
       this.calculateAge();
     },
+
     //いつまで生きたいか関数
     updateLifeExpectancy(lifeExpectancy) {
       this.lifeExpectancy = lifeExpectancy;
@@ -129,9 +138,6 @@ export default {
     },
     //現在の年齢関数
     calculateAge() {
-      if (!this.birthday) {
-        return;
-      }
       const now = dayjs();
       const birth = dayjs(this.birthday);
       const years = now.diff(birth, "year");
@@ -148,6 +154,13 @@ export default {
     addYearsToLifeExpectancy(years) {
       const currentDate = new Date();
       let newYear;
+
+      //誕生日が未入力の場合
+      if (!this.birthday) {
+        alert("誕生日を入力してください。(Please enter your birthday.)");
+        return;
+      }
+
       if (years === this.SPECIAL_YEAR) {
         this.selectedDate = "9999-12-31";
         this.specialYearSelected = true; // 特別な年を選択
@@ -159,6 +172,7 @@ export default {
       }
       this.updateLifeExpectancy(this.selectedDate);
     },
+
     // 計算関数
     calculateTimeLeft() {
       const now = dayjs();
